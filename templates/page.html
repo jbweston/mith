@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}{{ page.title }} |  {{SITENAME}}{%endblock%}
+{% block content %}
+    <div class="offset-by-one ten columns">
+    <h2 id="page-title">{{ page.title }}</h2>
+    {% import 'translations.html' as translations with context %}
+    {{ translations.translations_for(page) }}
+
+    {{ page.content }}
+
+	{% if page.modified %}
+		<p>
+		Last updated: {{ page.locale_modified }}
+		</p>
+	{% endif %}
+    </div>
+{% endblock %}

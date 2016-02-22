@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}{{ page.title }} | {{SITENAME}}{%endblock%}
+{% block content %}
+<div class="offset-by-one ten columns">
+    <h2 id="page-title">{{ page.title }}</h2>
+    {{ page.content }}
+
+    <ul id="publication-list">
+        {% for pub in PUBLICATIONS %}
+        <li class="publication">
+        <div class="pub-title"><a href="{{pub.link}}">{{pub.title}}</a></div>
+        <!--div class='pub-abstract'>{{pub.abstract}}</div-->
+        <div class='pub-info'>
+            <div class='pub-authors'>
+                <div class="pub-info-title">Authors:</div>
+                {% for author in pub.authors %}
+                    {% if author == AUTHOR %}
+                        <i>{{author}}</i>,
+                    {% else %}
+                        {{author}},
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <div class="pub-arxiv">
+                <div class="pub-info-title">arXiv:</div> <a href="{{pub.link}}">{{pub.ref}}</a>
+            </div>
+            {% if 'jref' in pub %}
+            <div class='pub-jref'>
+                <div class="pub-info-title">Published in:</div> <a href="{{pub.jlink}}">{{pub.jref}}</a>
+            </div>
+            {% endif %}
+        </div>
+        </li>
+        {% endfor %}
+    </ul>
+
+	{% if page.modified %}
+		<p>
+		Last updated: {{ page.locale_modified }}
+		</p>
+	{% endif %}
+</div>
+{% endblock %}

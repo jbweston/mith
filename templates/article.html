@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block title %}{{article.title}} | {{SITENAME}}{% endblock %}
+{% block head %}
+{{ super() }}
+	{% for keyword in article.keywords %}
+		<meta name="keywords" content="{{keyword}}" />
+	{% endfor %}
+
+	{% for description in article.description %}
+		<meta name="description" content="{{description}}" />
+	{% endfor %}
+
+	{% for tag in article.tags %}
+		<meta name="tags" content="{{tag}}" />
+	{% endfor %}
+
+
+	<script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+	<script>{% include "comment_form.js" %}</script>
+
+{% endblock %}
+
+{% block content %}
+<section id="content" class="body row">
+<div class="offset-by-one ten columns">
+  <header>
+    <h3 id="article-title">
+      <a href="{{ SITEURL }}/{{ article.url }}" rel="bookmark"
+         title="Permalink to {{ article.title|striptags }}">{{ article.title }}</a></h3>
+ {% import 'translations.html' as translations with context %}
+ {{ translations.translations_for(article) }}
+  </header>
+  {% include "article_infos.html" %}
+  <div id="article-content">
+    {{ article.content }}
+  </div><!-- /.entry-content -->
+
+  {% if article.album %}
+  <h4>Gallery</h4>
+  <div id="gallery">
+	<ul id="thumbnails">
+		{% for image in article.galleryimages %}
+			<li><a href="/images/gallery/{{article.album}}/{{image}}">
+			<img alt="" src="/images/thumbnails/thumbnail_{{THUMBNAIL_SIZE}}/{{article.album}}/{{image}}"/>
+			</a></li>
+		{% endfor %}
+	</ul>
+  </div>
+  {% endif %}
+
+  {% if article.comments %}
+  <div id="comment-section">
+	<h5 id="comment-section-title">Comments</h5>
+ 	{% for comment in article.comments recursive %}
+		<article id="comment-{{comment.slug}}" class="comment depth-{{loop.depth0}}">
+			<div class="row comment-metadata">
+			<div class="comment-leftmatter">
+				<img src="{{ SITEURL }}/{{ comment.avatar }}"
+					
+					alt="Avatar"
+					height="{{ PELICAN_COMMENT_SYSTEM_IDENTICON_SIZE }}"
+					width="{{ PELICAN_COMMENT_SYSTEM_IDENTICON_SIZE }}">
+				<div class="comment-author-date">
+				<div class="comment-author">{{ comment.author }}</div>
+				<div class="comment-date">Posted on <abbr class="published"
+					 title="{{ comment.date.isoformat() }}">
+					 {{ comment.locale_date }}</abbr></div>
+				</div>
+			</div>
+			<a class="comment-links comment-reply-link hidden" title="Reply"
+               href="#comment-write" author="{{comment.author}}"
+               slug="{{comment.slug | urlencode}}">
+				<i class="fa fa-fw fa-reply"></i></a>
+			<a class="comment-links" title="Permalink to this comment"
+			   href="{{ SITEURL }}/{{ article.url }}#comment-{{comment.slug}}"
+			   rel="bookmark">
+				<i class="fa fa-fw fa-link"></i></a>
+			</div><!-- row -->
+			<div class="comment-content">
+			{{ comment.content}}
+			</div>
+		</article>
+		{% if comment.replies %}
+			{{ loop(comment.replies) }}
+		{% endif %}
+	{% endfor %}
+
+
+  </div>
+  {% endif %} {# end comment block #}
+	<div id="comment-write">
+        <noscript>
+            <p>
+            <b>Javascript needs to be enabled to post comments.</b>
+            </p>
+        </noscript>
+
+        <div id="comment-form-js" class="hidden">
+        <div class="row">
+            <h5 id="comment-write-title" class="u-pull-left">Leave a Comment</h5>
+            <div id="comment-reply-field" class="u-pull-right hidden">
+            <a class="sred" id="comment-stop-reply" href="#">
+                <i class="fa fa-fw fa-times"></i></a>
+                Replying to <a id="comment-reply-link"></a>
+            </div>
+        </div>
+        <form role="form" id="commentForm" action="#">
+            <input name="Name" type="text" class="five columns" id="commentForm_inputName"
+                   placeholder="Your name/synonym">
+            <textarea name="Text" id="commentForm_inputText" class="u-full-width"
+                      rows="10" placeholder="Your comment"></textarea>
+            <button type="submit" id="commentForm_button">Post via email</button>
+            <input name="replyto" type="hidden" id="commentForm_replyto">
+        </form>
+        </div> <!-- #comment-form-js -->
+	</div> <!-- comment-write -->
+</div>
+
+<hr class="thick offset-by-one ten columns"></hr>
+
+{% include "rightmatter.html" %}
+
+</section>
+{% endblock %}

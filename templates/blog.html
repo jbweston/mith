@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}{{ page.title }} | {{SITENAME}}{%endblock%}
+{% block content %}
+<div class="offset-by-one ten columns">
+    {% import 'translations.html' as translations with context %}
+    {{ translations.translations_for(page) }}
+
+    <ul id="post-list">
+    {% for article in articles %}
+            <li><article class="hentry">
+                    <header> <h4 class="entry-title"><a href="{{ SITEURL }}/{{ article.url }}" rel="bookmark" title="Permalink to {{ article.title|striptags }}">{{ article.title }}</a></h4> </header>
+                    <footer class="post-info">
+                        <abbr class="published" title="{{ article.date.isoformat() }}"> {{ article.locale_date }} </abbr>
+                    </footer><!-- /.post-info -->
+                    <div class="entry-content"> {{ article.summary }} </div><!-- /.entry-content -->
+            </article></li>
+    {% endfor %}
+    </ul><!-- /#posts-list -->
+
+	{% if page.modified %}
+		<p>
+		Last updated: {{ page.locale_modified }}
+		</p>
+	{% endif %}
+</div>
+
+{% include "rightmatter.html" %}
+
+{% endblock %}
